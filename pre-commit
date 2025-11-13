@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+## Hook the hooks
+#
+# @moved      2025-11-13 op-asset-git
+# @version    1.0
+# @package    op-asset-hooks
+# @author     Tomoaki Nagahara
+# @copyright  Tomoaki Nagahara All right reserved.
+
+# Calc git root
+GIT_ROOT=`git rev-parse --show-superproject-working-tree`
+if [ -z "$GIT_ROOT" ]; then
+	GIT_ROOT=`git rev-parse --show-toplevel`
+fi
+
+# hook-the-hooks
+HOOK_NAME=`basename $0`
+${GIT_ROOT}/asset/git/hooks/hook-the-hooks.sh ${HOOK_NAME}
+
+# Check if status
+if [ $? -ne 0 ]; then
+    exit 1
+fi
+
+# Get target files
+FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(php|phtml|html)$')
+
+# Deny patterns
+PATTERNS='(var_dump|print_r|\$_GET|\$_POST)'
+
+# Loop files
+for FILE in $FILES; do
+    # Check file at patterns
+    if git show ":$FILE" | grep -E "$PATTERNS" > /dev/null; then
+        echo "$FILE: $PATTERNS"
+        echo "var_dump() or print_r() --> D()"
+        echo "$_GET or $_POST --> OP()->Request()"
+        exit 1
+    fi
+done
