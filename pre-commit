@@ -34,7 +34,7 @@ for FILE in $FILES; do
     if git show ":$FILE" | grep -E "$PATTERNS" > /dev/null; then
         echo "$FILE: $PATTERNS"
         echo "var_dump() or print_r() --> D()"
-        echo "$_GET or $_POST --> OP()->Request()"
+        echo '$_GET or $_POST --> OP()->Request()'
         exit 1
     fi
 done
