@@ -15,7 +15,7 @@ fi
 
 # hook-the-hooks
 HOOK_NAME=`basename $0`
-${GIT_ROOT}/asset/git/hooks/hook-the-hooks.sh ${HOOK_NAME}
+${GIT_ROOT}/asset/init/hooks/hook-the-hooks.sh ${HOOK_NAME}
 
 # Check if status
 if [ $? -ne 0 ]; then
