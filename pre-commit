@@ -1,11 +1,16 @@
 #!/usr/bin/env bash
-## Hook the hooks
-#
 # @moved      2025-11-13 op-asset-git
 # @version    1.0
 # @package    op-asset-hooks
 # @author     Tomoaki Nagahara
 # @copyright  Tomoaki Nagahara All right reserved.
+
+# ANSI colors
+RED="\033[31m"
+YELLOW="\033[33m"
+BLUE="\033[36m"
+BOLD="\033[1m"
+RESET="\033[0m"
 
 # Calc git root
 GIT_ROOT=`git rev-parse --show-superproject-working-tree`
@@ -13,28 +18,96 @@ if [ -z "$GIT_ROOT" ]; then
 	GIT_ROOT=`git rev-parse --show-toplevel`
 fi
 
-# hook-the-hooks
+# Run hook-the-hooks
 HOOK_NAME=`basename $0`
 ${GIT_ROOT}/asset/init/hooks/hook-the-hooks.sh ${HOOK_NAME}
 
-# Check if status
+# Stop if hook-the-hooks returned error
 if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# Get target files
+# Target file extensions
 FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(php|phtml|html)$')
 
-# Deny patterns
-PATTERNS='(var_dump|print_r|\$_GET|\$_POST)'
+# Forbidden patterns (double backslashes needed for proper escaping)
+DENY_WORDS=(
+    "var_dump"
+    "print_r"
+    "dd"
+    "die"
+    "exit"
+    "\\\$_GET"
+    "\\\$_POST"
+    "\\\$_REQUEST"
+    "\\\$_COOKIE"
+    "\\\$_SESSION"
+    "\\\$_SERVER"
+)
 
-# Loop files
+FOUND=0
+
 for FILE in $FILES; do
-    # Check file at patterns
-    if git show ":$FILE" | grep -E "$PATTERNS" > /dev/null; then
-        echo "$FILE: $PATTERNS"
-        echo "var_dump() or print_r() --> D()"
-        echo '$_GET or $_POST --> OP()->Request()'
-        exit 1
-    fi
+    DIFF=$(git diff --cached -U0 -- "$FILE")
+    current_line=0
+    current_hunk=""
+
+    while IFS= read -r line; do
+
+        # Detect hunk header (@@ -old,new +old,new @@)
+        if [[ "$line" =~ ^@@ ]]; then
+            # Extract the starting line number on the "+" (new file) side
+            current_line=$(echo "$line" | sed -E 's/^@@ .* \+([0-9]+).*/\1/')
+
+            # Reset hunk buffer
+            current_hunk="$line"$'\n'
+            continue
+        fi
+
+        # Inside hunk: record all lines (+, -, space)
+        if [[ "$line" =~ ^[\ +-] ]]; then
+            current_hunk+="$line"$'\n'
+        fi
+
+        # Only check added lines (starting with + but not +++)
+        if [[ "$line" =~ ^\+[^+] ]]; then
+            add_line="${line:1}"
+
+            # Check all forbidden patterns
+            for WORD in "${DENY_WORDS[@]}"; do
+                if echo "$add_line" | grep -E "$WORD" > /dev/null; then
+                    FOUND=1
+
+                    echo ""
+                    echo -e "${RED}${BOLD}Error: Forbidden pattern detected: '${WORD}'${RESET}"
+                    echo -e "${YELLOW}----- Found in staged changes (${FILE}) -----${RESET}"
+
+                    # Show entire diff hunk
+                    echo -e "${YELLOW}----- Diff Hunk -----${RESET}"
+                    echo -e "$current_hunk"
+                    echo -e "${YELLOW}----------------------${RESET}"
+
+                    # Show exact offending line (your preferred format)
+                    echo -e "${BLUE}${current_line}${RESET}: + ${add_line}"
+                    echo -e "${YELLOW}-------------------------------------------${RESET}"
+                fi
+            done
+
+            # Move to next line number
+            current_line=$((current_line + 1))
+        fi
+
+    done <<< "$DIFF"
 done
+
+if [ $FOUND -eq 1 ]; then
+    echo ""
+    echo -e "${RED}${BOLD} Commit aborted due to forbidden code patterns.${RESET}"
+    echo ""
+    echo -e "${BLUE}Recommended replacements:${RESET}"
+    echo -e "  var_dump(), print_r() --> D()"
+    echo -e "  \$_GET, \$_POST, \$_REQUEST --> OP()->Request()"
+    exit 1
+fi
+
+exit 0
