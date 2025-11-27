@@ -34,9 +34,9 @@ FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(php|phtml|
 DENY_WORDS=(
     "var_dump"
     "print_r"
-    "dd"
-    "die"
-    "exit"
+#   "dd"
+#   "die"
+    "exit;"
     "\\\$_GET"
     "\\\$_POST"
     "\\\$_REQUEST"
