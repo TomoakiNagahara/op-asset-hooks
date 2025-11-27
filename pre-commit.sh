@@ -22,6 +22,11 @@ fi
 HOOK_NAME=`basename $0`
 ${GIT_ROOT}/asset/init/hooks/hook-the-hooks.sh ${HOOK_NAME}
 
+# Display current file path
+REAL_PATH=$(realpath "$0")
+DIR_PATH=$(cd $(dirname "$0") && pwd)
+echo "Exetute: $DIR_PATH/$HOOK_NAME"
+
 # Stop if hook-the-hooks returned error
 if [ $? -ne 0 ]; then
     exit 1
