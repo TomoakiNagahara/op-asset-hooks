@@ -1,21 +1,22 @@
 #!/usr/bin/env bash
-## Hook the hooks
+## pre-push
 #
-# @moved      2025-11-13 op-asset-git
-# @version    1.0
+# @created    2024-11-23 op-asset-git
+# @moved      2025-11-13 op-asset-hooks
+# @license    Apache-2.0
 # @package    op-asset-hooks
-# @author     Tomoaki Nagahara
-# @copyright  Tomoaki Nagahara All right reserved.
+# @copyright  (C) 2024 Tomoaki Nagahara
 
-# Calc git root
-GIT_ROOT=`git rev-parse --show-superproject-working-tree`
-if [ -z "$GIT_ROOT" ]; then
-	GIT_ROOT=`git rev-parse --show-toplevel`
-fi
-
-# hook-the-hooks
+# Current hook
 HOOK_NAME=`basename $0`
-${GIT_ROOT}/asset/init/hooks/hook-the-hooks.sh ${HOOK_NAME}
+
+# Display current file path
+REAL_PATH=$(realpath "$0")
+DIR_PATH=$(cd $(dirname "$0") && pwd)
+echo "Exetute: $DIR_PATH/$HOOK_NAME"
+
+# Hook
+.hooks/hook-the-hooks.sh ${HOOK_NAME}
 
 # Check if status
 if [ $? -ne 0 ]; then
@@ -28,7 +29,7 @@ if [ -e "ci.sh" ]; then
 elif [ -e ".ci.sh" ]; then
   SOURCE=".ci.sh"
 else
-  echo "ci.sh does not exist."
+  echo ".ci.sh does not exist."
   echo `pwd`
   exit 1
 fi
