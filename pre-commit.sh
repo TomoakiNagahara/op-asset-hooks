@@ -14,20 +14,16 @@ BLUE="\033[36m"
 BOLD="\033[1m"
 RESET="\033[0m"
 
-# Calc git root
-GIT_ROOT=`git rev-parse --show-superproject-working-tree`
-if [ -z "$GIT_ROOT" ]; then
-	GIT_ROOT=`git rev-parse --show-toplevel`
-fi
-
-# Run hook-the-hooks
+# Current hook
 HOOK_NAME=`basename $0`
-${GIT_ROOT}/asset/init/hooks/hook-the-hooks.sh ${HOOK_NAME}
 
 # Display current file path
 REAL_PATH=$(realpath "$0")
 DIR_PATH=$(cd $(dirname "$0") && pwd)
 echo "Exetute: $DIR_PATH/$HOOK_NAME"
+
+# Hook
+.hooks/hook-the-hooks.sh ${HOOK_NAME}
 
 # Stop if hook-the-hooks returned error
 if [ $? -ne 0 ]; then
