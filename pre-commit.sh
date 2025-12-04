@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
-# @moved      2025-11-13 op-asset-git
-# @version    1.0
+## pre-commit
+#
+# @created    2024-11-23 op-asset-git
+# @moved      2025-11-13 op-asset-hooks
+# @license    Apache-2.0
 # @package    op-asset-hooks
-# @author     Tomoaki Nagahara
-# @copyright  Tomoaki Nagahara All right reserved.
+# @copyright  (C) 2024 Tomoaki Nagahara
 
 # ANSI colors
 RED="\033[31m"
