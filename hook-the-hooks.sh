@@ -3,10 +3,9 @@
 #
 # @created    2024-04-21
 # @moved      2025-11-13 op-asset-git
-# @version    1.0
+# @license    Apache-2.0
 # @package    op-asset-hooks
-# @author     Tomoaki Nagahara
-# @copyright  Tomoaki Nagahara All right reserved.
+# @copyright  Tomoaki Nagahara
 
 # Is the hook-the-hooks already running?
 if [ -n "${HOOK_THE_HOOKS:-}" ]; then
