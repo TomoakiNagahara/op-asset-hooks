@@ -16,7 +16,7 @@ DIR_PATH=$(cd $(dirname "$0") && pwd)
 echo "Exetute: $DIR_PATH/$HOOK_NAME"
 
 # Hook
-.hooks/hook-the-hooks.sh ${HOOK_NAME}
+$DIR_PATH/hook-the-hooks.sh ${HOOK_NAME}
 
 # Check if status
 if [ $? -ne 0 ]; then
