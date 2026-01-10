@@ -111,8 +111,10 @@ function GetRules()
 	//	Check values.
 	foreach( ['prefix','deny'] as $key ){
 		//	...
+		if( isset($rules[$key]) ){
 		if(!is_array($rules[$key])){
 			Fail("The value of {$key} must be a array: type=".gettype($rules[$key]));
+		}
 		}
 
 		//	...
