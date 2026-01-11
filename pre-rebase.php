@@ -123,7 +123,14 @@ function GetRules()
 		}
 	}
 
-	//	...
+	//	Add current branch name.
+	if( isset($rules['prefix']) ){
+		if( $branch = trim(`git branch --show-current` ?? '') ){
+			$rules['prefix'][] = "{$branch}: ";
+		}
+	}
+
+	//	Return rules.
 	return $rules;
 }
 
