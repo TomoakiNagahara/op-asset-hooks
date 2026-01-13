@@ -90,8 +90,8 @@ exit(0);
  */
 function GetRules()
 {
-	//	...
-	$config_file = 'asset/config/git-rebase-rules.php';
+	//	Config file path.
+	$config_file = __DIR__.'/../../config/git-rebase-rules.php';
 
 	//	Load rule from php config file.
 	if( file_exists($config_file) ){
