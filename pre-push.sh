@@ -37,8 +37,12 @@ fi
 #  Include ci.sh
 echo "execute --> $SOURCE"
 source "$SOURCE"
+if [ $? -ne 0 ]; then
+  exit 1
+fi
 
-#  Result
+#  Check prefix of commit message.
+$DIR_PATH/pre-push-prefix.php
 if [ $? -ne 0 ]; then
   exit 1
 fi
