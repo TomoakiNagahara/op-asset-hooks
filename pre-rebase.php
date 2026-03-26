@@ -96,6 +96,7 @@ exit(0);
  */
 function GetCommitIdsList( string $arg )
 {
+	/*
 	//	Get rebase target commit from shell argument ($1 in shell)
 	if( $target = $arg ){
 		$target = escapeshellarg($target);
@@ -111,9 +112,10 @@ function GetCommitIdsList( string $arg )
 	}else{
 		Fail("Does not found commit id: {$target}");
 	}
+	*/
 
 	//	Generate get commit id list comand.
-	$comand = "git rev-list HEAD..{$commit_id}";
+	$comand = "git rev-list HEAD..{$arg}";
 
 	//	Get commit id list.
 	$commits = [];
