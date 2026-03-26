@@ -4,7 +4,7 @@
  *
  * @created    2026-01-08
  * @license    Apache-2.0
- * @package    op-skeleton-2030
+ * @package    op-asset-hooks
  * @copyright  Tomoaki Nagahara
  */
 

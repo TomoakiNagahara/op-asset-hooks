@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-## pre-commit
+## op-asset-hooks:/pre-commit.sh
 #
 # @created    2024-11-23 op-asset-git
 # @moved      2025-11-13 op-asset-hooks
 # @license    Apache-2.0
 # @package    op-asset-hooks
-# @copyright  (C) 2024 Tomoaki Nagahara
+# @copyright  Tomoaki Nagahara
 
 # ANSI colors
 RED="\033[31m"

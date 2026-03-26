@@ -1,5 +1,5 @@
 
-## Hook the hooks
+## op-asset-hooks:/hook-the-hooks.sh
 #
 # @created    2024-04-21
 # @moved      2025-11-13 op-asset-git
