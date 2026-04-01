@@ -37,8 +37,14 @@ while( $line = fgets($stdin) ){
 	}
 }
 
+//	Get commit id list.
+if( $range ?? null ){
+	$commits = explode("\n", trim(shell_exec("git rev-list {$range}") ?? ''));
+}else{
+	$commits = [];
+}
+
 //	...
-$commits = explode("\n", trim(shell_exec("git rev-list {$range}") ?? ''));
 foreach( $commits as $commit ){
 	//	...
 	if(!$commit ){
